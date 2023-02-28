@@ -1,0 +1,6 @@
+---
+- name: restart teamspeak
+  become: yes
+  ansible.builtin.systemd:
+    name: '{{ teamspeak_server_service }}'
+    state: restarted

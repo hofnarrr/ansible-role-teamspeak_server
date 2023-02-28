@@ -1,0 +1,6 @@
+---
+teamspeak_server_user: ts3
+teamspeak_server_user_home: /opt/ts3
+teamspeak_server_install_dir: '{{ teamspeak_server_user_home }}/ts3server'
+teamspeak_server_bin: '{{ teamspeak_server_install_dir }}/ts3server'
+teamspeak_server_service: ts3-server

@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: teamspeak_server
+  author: hofnarr
+  description: TeamSpeak 3 server
+  license: MIT
+
+  galaxy_tags:
+    - teamspeak
+    - voip
+    - voice

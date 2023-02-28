@@ -1,0 +1,44 @@
+---
+- block:
+  - name: teamspeak_server | add user for teamspeak
+    ansible.builtin.user:
+      name: '{{ teamspeak_server_user }}'
+      home: '{{ teamspeak_server_user_home }}'
+      password_lock: yes
+
+  - name: teamspeak_server | create ts3 dir
+    ansible.builtin.file:
+      path: '{{ teamspeak_server_install_dir }}'
+      state: directory
+      owner: '{{ teamspeak_server_user }}'
+      group: '{{ teamspeak_server_user }}'
+
+  - name: teamspeak_server | download teamspeak server
+    ansible.builtin.get_url:
+      url: https://files.teamspeak-services.com/releases/server/3.13.7/teamspeak3-server_linux_amd64-3.13.7.tar.bz2
+      dest: /tmp/teamspeak-server.tar.bz2
+
+  - name: teamspeak_server | extract teamspeak server
+    ansible.builtin.command: tar -C {{ teamspeak_server_install_dir }} --strip 1 -xvf /tmp/teamspeak-server.tar.bz2
+
+  - name: teamspeak_server | set permissions
+    ansible.builtin.file:
+      path: '{{ teamspeak_server_install_dir }}'
+      owner: '{{ teamspeak_server_user }}'
+      group: '{{ teamspeak_server_user }}'
+      recurse: yes
+
+  - name: teamspeak_server | render systemd unit
+    ansible.builtin.template:
+      src: ts3-server.service.j2
+      dest: /etc/systemd/system/{{ teamspeak_server_service }}.service
+    notify: restart teamspeak
+
+  - name: teamspeak_server | enable and start teamspeak server service
+    ansible.builtin.systemd:
+      name: '{{ teamspeak_server_service }}'
+      enabled: yes
+      state: started
+      daemon_reload: yes
+
+  become: yes
